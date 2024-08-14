@@ -24,12 +24,15 @@ jobs:
 
     - name: Install dependencies
       run: dotnet restore
+      working-directory: YourProject
 
     - name: Build
       run: dotnet build --configuration Release
+      working-directory: YourProject
 
     - name: Publish
       run: dotnet publish --configuration Release --output ./publish
+      working-directory: YourProject
 
   test:
     name: Run Unit Tests and Code Quality Checks
@@ -45,16 +48,15 @@ jobs:
       with:
         dotnet-version: '6.x'
 
-    - name: Install dependencies
-      run: dotnet restore
-
     - name: Run tests
       run: dotnet test --no-restore --verbosity normal
+      working-directory: YourProject
 
     - name: Code quality and coverage
       run: |
         dotnet tool install --global dotnet-reportgenerator-globaltool
         reportgenerator -reports:TestResults/*.xml -targetdir:coverage-report -reporttypes:Html
+      working-directory: YourProject
 
     - name: Upload code coverage results
       uses: actions/upload-artifact@v3
@@ -80,5 +82,4 @@ jobs:
       run: |
         echo "Deploying application to staging environment..."
         # Add deployment script or commands here
-        # For example, you might use a tool like Azure CLI or a deployment script to handle deployment
-        # az webapp deploy --resource-group <resource-group> --name <app-name> --src-path ./publish
+      working-directory: YourProject
